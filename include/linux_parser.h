@@ -6,6 +6,15 @@
 #include <string>
 
 namespace LinuxParser {
+
+struct MemoryUtilData_t
+{
+  float MEM_TOTAL = 0;
+  float MEM_FREE = 0;
+  float MEM_AVAILABLE = 0;
+  float MEM_BUFFERS = 0; 
+};
+
 // Paths
 const std::string kProcDirectory{"/proc/"};
 const std::string kCmdlineFilename{"/cmdline"};
@@ -18,13 +27,40 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+static bool isNumber(const std::string& str);
+
 // System
-float MemoryUtilization();
+/**
+ * @brief Computes memory utilization based on the data available in
+ * the /proc/meminfo file
+ * This function reads the file and extracts useful data and updates 
+ * memoryUtilData members, then returns the memory utilization in 
+ * fraction using the following formula
+ * --------------------------------------------------
+ * |               Memory Utilization               |
+ * |------------------------------------------------|
+ * | Formula:                                       |
+ * |   Used Memory = MemTotal - MemFree             |
+ * |   Memory Utilization = (Used Memory / MemTotal)|
+ * --------------------------------------------------
+ * @note the return value is converted to percent before display in 
+ * NCursesDisplay::ProgressBar
+ * @param memoryUtilData 
+ * @return {float} : fraction of total used memory
+ */
+float MemoryUtilization(MemoryUtilData_t &memoryUtilData);
 long UpTime();
 std::vector<int> Pids();
 int TotalProcesses();
 int RunningProcesses();
 std::string OperatingSystem();
+/**
+ * @brief Reads the version file in proc directory and 
+ * retrives the kernel version of the operating system.
+ * The version file contains only one line and the 
+ * kernel version is the third string in this line.
+ * @return {string}  : The kernel version as a string.
+ */
 std::string Kernel();
 
 // CPU

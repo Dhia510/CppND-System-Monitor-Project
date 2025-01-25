@@ -2,13 +2,20 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
-
+#include <iostream>
 #include "linux_parser.h"
 
 using std::stof;
 using std::string;
 using std::to_string;
 using std::vector;
+
+static bool LinuxParser::isNumber(const std::string& str) {
+    for (char c : str) {
+        if (!std::isdigit(c)) return false;
+    }
+    return !str.empty();
+}
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -33,7 +40,13 @@ string LinuxParser::OperatingSystem() {
   return value;
 }
 
-// DONE: An example of how to read data from the filesystem
+/**
+ * @brief Reads the version file in proc directory and 
+ * retrives the kernel version of the operating system.
+ * The version file contains only one line and the 
+ * kernel version is the third string in this line.
+ * @return {string}  : The kernel version as a string.
+ */
 string LinuxParser::Kernel() {
   string os, version, kernel;
   string line;
@@ -66,8 +79,77 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+/**
+ * @brief Computes memory utilization based on the data available in
+ * the /proc/meminfo file
+ * This function reads the file and extracts useful data and updates 
+ * memoryUtilData members, then returns the memory utilization in 
+ * fraction using the following formula
+ * --------------------------------------------------
+ * |               Memory Utilization               |
+ * |------------------------------------------------|
+ * | Formula:                                       |
+ * |   Used Memory = MemTotal - MemFree             |
+ * |   Memory Utilization = (Used Memory / MemTotal)|
+ * --------------------------------------------------
+ * @note the return value is converted to percent before display in 
+ * NCursesDisplay::ProgressBar
+ * @param memoryUtilData 
+ * @return float (fraction of total used memory)
+ */
+float LinuxParser::MemoryUtilization(MemoryUtilData_t &memoryUtilData) 
+{ 
+  string key;
+  string value;
+  string line;
+  vector<int> memValues;
+  /* Create an input file stream from file meminfo containing memory util data*/
+  std::ifstream memInfoStream(kProcDirectory + kMeminfoFilename);
+
+  /* Check if the stream is opened successfully */
+  if (memInfoStream.is_open())
+  {
+    /* iterate threw the 4 first lines for MemTotal, MemFree, MemAvailable and Buffers*/
+    for (int l_idx = 0; l_idx < 4; l_idx++)
+    {
+      /* Read line and store it in line variable */
+      if (std::getline(memInfoStream, line))
+      {
+        /* Create input string stream from the line we just read */
+        std::istringstream linestream(line);
+        /* Extract key and value */
+        linestream >> key >> value;
+        /* Check if the value is a number */
+        if (isNumber(value))
+        {
+          /* Push it in the memValues vector */
+          memValues.push_back(stoi(value));
+        }
+        else
+        {
+          std::cout << "LinuxParser::MemoryUtilization:: Error reading value in line " << l_idx << std::endl;
+        }
+      }
+      else
+      {
+        std::cout << "LinuxParser::MemoryUtilization:: Error reading line " << l_idx << " from file\n";
+      }
+    }
+  }
+  else
+  {
+    std::cout << "LinuxParser::MemoryUtilization:: Error opening input stream from file\n";
+  }
+
+  /* Parse extracted values in a structure */
+  memoryUtilData.MEM_TOTAL = memValues[0];
+  memoryUtilData.MEM_FREE = memValues[1];
+  memoryUtilData.MEM_AVAILABLE = memValues[2];
+  memoryUtilData.MEM_BUFFERS = memValues[3];
+
+  /* Return memory ulitzation in percent */
+  return float((memoryUtilData.MEM_TOTAL - memoryUtilData.MEM_FREE) / memoryUtilData.MEM_TOTAL); 
+}
 
 // TODO: Read and return the system uptime
 long LinuxParser::UpTime() { return 0; }
