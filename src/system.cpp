@@ -20,11 +20,26 @@ Processor &System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 vector<Process> &System::Processes() { return processes_; }
 
-// TODO: Return the system's kernel identifier (string)
-std::string System::Kernel() { return LinuxParser::Kernel(); }
+/**
+ * @brief Return kernel version provided by the 
+ * LinuxParser API 
+ * calls LinuxParser::Kernel()
+ * @return {string}  : The kernel version as a string.
+ */
+std::string System::Kernel() 
+{ 
+    return LinuxParser::Kernel(); 
+}
 
-// TODO: Return the system's memory utilization
-float System::MemoryUtilization() { return LinuxParser::MemoryUtilization(); }
+/**
+ * @brief Returns the system's memory utilization.
+ * Calls LinuxParser::MemoryUtilization()
+ * @return {float}  : memory utilization as a float
+ */
+float System::MemoryUtilization() 
+{ 
+    return LinuxParser::MemoryUtilization( System::memoryUtilData_); 
+}
 
 // TODO: Return the operating system name
 std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }

@@ -6,22 +6,37 @@
 
 #include "process.h"
 #include "processor.h"
-
+#include "linux_parser.h"
 class System {
  public:
   Processor& Cpu();                   // TODO: See src/system.cpp
   std::vector<Process>& Processes();  // TODO: See src/system.cpp
-  float MemoryUtilization();          // TODO: See src/system.cpp
+  /**
+ * @brief Returns the system's memory utilization.
+ * Calls LinuxParser::MemoryUtilization()
+ * @return {float}  : memory utilization as a float
+ */
+  float MemoryUtilization();          
   long UpTime();                      // TODO: See src/system.cpp
   int TotalProcesses();               // TODO: See src/system.cpp
   int RunningProcesses();             // TODO: See src/system.cpp
-  std::string Kernel();               // TODO: See src/system.cpp
+  /**
+ * @brief Return kernel version provided by the 
+ * LinuxParser API 
+ * calls LinuxParser::Kernel()
+ * @return {string}  : The kernel version as a string.
+ */
+  std::string Kernel();
   std::string OperatingSystem();      // TODO: See src/system.cpp
 
-  // TODO: Define any necessary private members
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
+  /**
+   * @brief structure for holding memory usage
+   * data
+   */
+  LinuxParser::MemoryUtilData_t memoryUtilData_;
 };
 
 #endif
