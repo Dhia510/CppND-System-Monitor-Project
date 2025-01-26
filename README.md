@@ -1,6 +1,6 @@
 # CppND-System-Monitor
 
-Starter code for System Monitor Projec.
+Starter code for System Monitor Project.
 
 ![System Monitor](images/monitor.png)
 
