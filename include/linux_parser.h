@@ -51,6 +51,12 @@ static bool isNumber(const std::string& str);
 float MemoryUtilization(MemoryUtilData_t &memoryUtilData);
 long UpTime();
 std::vector<int> Pids();
+/**
+ * @brief Reads /proc/stat file and extracts the total number of processes  
+ * which is the value to the key "processes".
+ * 
+ * @return {int} : The total number of processes as an integer. 
+ */
 int TotalProcesses();
 /**
  * @brief Reads /proc/stat file and extracts the number of running processes 

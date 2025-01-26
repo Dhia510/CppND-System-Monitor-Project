@@ -172,8 +172,55 @@ long LinuxParser::IdleJiffies() { return 0; }
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
-// TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+/**
+ * @brief Reads /proc/stat file and extracts the total number of processes  
+ * which is the value to the key "processes".
+ * 
+ * @return {int} : The total number of processes as an integer. 
+ */
+int LinuxParser::TotalProcesses() 
+{ 
+  string key = "";
+  string value = "0";
+  string line;
+  std::ifstream statStream(kProcDirectory + kStatFilename);
+  int totProcessNb = 0;
+
+  /* Check if input file stream is open */
+  if (statStream.is_open())
+  {
+    /* As long as the key is different from "processes"*/
+    while (key.compare("processes"))
+    {
+      /* Read line and check if it is read correctly */
+      if (std::getline(statStream, line))
+      {
+        /* Create string stream from line */
+        std::istringstream lineStream(line);
+
+        lineStream >> key >> value;
+      }
+      else
+      {
+        std::cout << "LinuxParser::TotalProcesses:: Error reading line from file\n";
+      }
+    }
+    
+  }
+  else
+  {
+    std::cout << "LinuxParser::TotalProcesses:: Error opening input stream from file\n";
+  }
+  
+  /* If value found is a number */
+  if (isNumber(value))
+  {
+    /* Convert to int and store it in return var */
+    totProcessNb = stoi(value);
+  }
+  
+  return totProcessNb; 
+}
 
 /**
  * @brief Reads /proc/stat file and extracts the number of running processes 
