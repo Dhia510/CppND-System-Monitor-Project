@@ -18,7 +18,14 @@ class System {
  */
   float MemoryUtilization();          
   long UpTime();                      // TODO: See src/system.cpp
-  int TotalProcesses();               // TODO: See src/system.cpp
+
+/**
+ * @brief Return the total number of processes by calling
+ * LinuxParser::TotalProcesses()
+ * 
+ * @return {int} : The total number of processes as an integer. 
+ */
+  int TotalProcesses();               
   /**
  * @brief This function returns the number of running processes
  * by calling LinuxParser::RunningProcesses()
