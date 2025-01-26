@@ -10,6 +10,8 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+#define RUN_PROCESS_KEY ("procs_running")
+
 static bool LinuxParser::isNumber(const std::string& str) {
     for (char c : str) {
         if (!std::isdigit(c)) return false;
@@ -95,7 +97,7 @@ vector<int> LinuxParser::Pids() {
  * @note the return value is converted to percent before display in 
  * NCursesDisplay::ProgressBar
  * @param memoryUtilData 
- * @return float (fraction of total used memory)
+ * @return {float} : fraction of total used memory
  */
 float LinuxParser::MemoryUtilization(MemoryUtilData_t &memoryUtilData) 
 { 
@@ -173,8 +175,60 @@ vector<string> LinuxParser::CpuUtilization() { return {}; }
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { return 0; }
 
-// TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+/**
+ * @brief Reads /proc/stat file and extracts the number of running processes 
+ *  which is the value to the key "procs_running".
+ * 
+ * @return {int} : The number of running processes as an integer.
+ */
+int LinuxParser::RunningProcesses() 
+{ 
+  string key = "";
+  string value = "0";
+  string line;
+  int nbOfRunningProcesses = 0;
+  /* Open a file input stream from file /proc/stat */
+  std::ifstream statStream(kProcDirectory + kStatFilename);
+
+  /* Check if the input stream is opened correctly */
+  if (statStream.is_open())
+  {
+    /* loop through the file until the key procs_running is found */
+    while (key.compare(RUN_PROCESS_KEY))
+    {
+      /* Read the line */
+      if (std::getline(statStream, line))
+      {
+        /* Create a string stream from this line */
+        std::istringstream lineStream(line);
+        /* Get key and Value */
+        lineStream >> key >> value;
+
+      }
+      else
+      {
+        std::cout << "LinuxParser::RunningProcesses:: error reading line from file\n";
+      }
+    }
+    
+    /* Check if the value found is actually a number */
+    if (isNumber(value))
+    {
+      nbOfRunningProcesses = stoi(value);
+    }
+    else
+    {
+      std::cout << "LinuxParser::RunningProcesses:: Error extracting the value for nb of processes\n";
+    }
+  }
+  else
+  {
+    std::cout << "LinuxParser::RunningProcesses:: Error opening input stream from file\n";
+  }
+  
+  /* Convert and return the value */
+  return nbOfRunningProcesses; 
+}
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function

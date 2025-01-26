@@ -52,7 +52,14 @@ float MemoryUtilization(MemoryUtilData_t &memoryUtilData);
 long UpTime();
 std::vector<int> Pids();
 int TotalProcesses();
+/**
+ * @brief Reads /proc/stat file and extracts the number of running processes 
+ *  which is the value to the key "procs_running".
+ * 
+ * @return {int} : The number of running processes as an integer.
+ */
 int RunningProcesses();
+
 std::string OperatingSystem();
 /**
  * @brief Reads the version file in proc directory and 
