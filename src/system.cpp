@@ -41,7 +41,12 @@ float System::MemoryUtilization()
     return LinuxParser::MemoryUtilization( System::memoryUtilData_); 
 }
 
-// TODO: Return the operating system name
+/**
+ * @brief Return the operating system name provided by the 
+ * LinuxParser API
+ * 
+ * @return {string} : The operating system name as a string.
+ */
 std::string System::OperatingSystem() 
 { 
     return LinuxParser::OperatingSystem(); 

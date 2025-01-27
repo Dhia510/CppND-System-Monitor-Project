@@ -45,7 +45,13 @@ class System {
  * @return {string}  : The kernel version as a string.
  */
   std::string Kernel();
-  std::string OperatingSystem();      // TODO: See src/system.cpp
+  /**
+   * @brief Return the operating system name provided by the 
+   * LinuxParser API
+   * 
+   * @return {string} : The operating system name as a string.
+   */
+  std::string OperatingSystem();      
 
  private:
   Processor cpu_ = {};
