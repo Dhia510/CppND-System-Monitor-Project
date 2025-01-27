@@ -11,13 +11,18 @@ class System {
  public:
   Processor& Cpu();                   // TODO: See src/system.cpp
   std::vector<Process>& Processes();  // TODO: See src/system.cpp
-  /**
+/**
  * @brief Returns the system's memory utilization.
  * Calls LinuxParser::MemoryUtilization()
  * @return {float}  : memory utilization as a float
  */
-  float MemoryUtilization();          
-  long UpTime();                      // TODO: See src/system.cpp
+  float MemoryUtilization();       
+/**
+ * @brief Return the system uptime by calling LinuxParser::UpTime()
+ * 
+ * @return {long int} : The system uptime in seconds. 
+ */
+  long int UpTime();                      
 
 /**
  * @brief Return the total number of processes by calling
@@ -26,7 +31,7 @@ class System {
  * @return {int} : The total number of processes as an integer. 
  */
   int TotalProcesses();               
-  /**
+/**
  * @brief This function returns the number of running processes
  * by calling LinuxParser::RunningProcesses()
  * 
