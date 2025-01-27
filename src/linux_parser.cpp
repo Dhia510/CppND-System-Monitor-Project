@@ -12,22 +12,25 @@ using std::vector;
 
 #define RUN_PROCESS_KEY ("procs_running")
 
-static bool LinuxParser::isNumber(const std::string& str) {
-    bool decimalPointSeen = false;
 
-    for (char c : str) {
-        if (c == '.') {
-            if (decimalPointSeen) return false; // More than one decimal point
-            decimalPointSeen = true;
-        } else if (!std::isdigit(c)) {
-            return false;
-        }
-    }
+/**
+ * @brief This function checks if a string is a number
+ * This includes also floating point numbers
+ * 
+ * @param str : String to check
+ * @return {true} : String is a number 
+ * @return {false} : String is not a number 
+ */
+static bool isNumber(const std::string& str);
 
-    return !str.empty();
-}
-
-// DONE: An example of how to read data from the filesystem
+/**
+ * @brief Reads the operating system name from the /etc/os-release file
+ * The function formats the file replacing spaces with underscores and
+ * = and " to spaces. It then extracts the value of the key "PRETTY_NAME
+ * and reformat back the string to the original format.
+ * 
+ * @return {string} : The operating system name as a string. 
+ */
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -354,3 +357,26 @@ string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+
+/**
+ * @brief This function checks if a string is a number
+ * This includes also floating point numbers
+ * 
+ * @param str : String to check
+ * @return true 
+ * @return false 
+ */
+static bool isNumber(const std::string& str) {
+    bool decimalPointSeen = false;
+
+    for (char c : str) {
+        if (c == '.') {
+            if (decimalPointSeen) return false; // More than one decimal point
+            decimalPointSeen = true;
+        } else if (!std::isdigit(c)) {
+            return false;
+        }
+    }
+
+    return !str.empty();
+}

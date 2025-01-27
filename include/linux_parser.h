@@ -27,7 +27,6 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
-static bool isNumber(const std::string& str);
 
 // System
 /**
@@ -73,7 +72,14 @@ int TotalProcesses();
  * @return {int} : The number of running processes as an integer.
  */
 int RunningProcesses();
-
+/**
+ * @brief Reads the operating system name from the /etc/os-release file
+ * The function formats the file replacing spaces with underscores and
+ * = and " to spaces. It then extracts the value of the key "PRETTY_NAME
+ * and reformat back the string to the original format.
+ * 
+ * @return {string} : The operating system name as a string. 
+ */
 std::string OperatingSystem();
 /**
  * @brief Reads the version file in proc directory and 
