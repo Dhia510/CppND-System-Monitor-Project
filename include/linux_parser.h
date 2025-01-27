@@ -6,6 +6,15 @@
 #include <string>
 
 namespace LinuxParser {
+
+struct MemoryUtilData_t
+{
+  float MEM_TOTAL = 0;
+  float MEM_FREE = 0;
+  float MEM_AVAILABLE = 0;
+  float MEM_BUFFERS = 0; 
+};
+
 // Paths
 const std::string kProcDirectory{"/proc/"};
 const std::string kCmdlineFilename{"/cmdline"};
@@ -18,13 +27,67 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+
 // System
-float MemoryUtilization();
-long UpTime();
+/**
+ * @brief Computes memory utilization based on the data available in
+ * the /proc/meminfo file
+ * This function reads the file and extracts useful data and updates 
+ * memoryUtilData members, then returns the memory utilization in 
+ * fraction using the following formula
+ * --------------------------------------------------
+ * |               Memory Utilization               |
+ * |------------------------------------------------|
+ * | Formula:                                       |
+ * |   Used Memory = MemTotal - MemFree             |
+ * |   Memory Utilization = (Used Memory / MemTotal)|
+ * --------------------------------------------------
+ * @note the return value is converted to percent before display in 
+ * NCursesDisplay::ProgressBar
+ * @param memoryUtilData 
+ * @return {float} : fraction of total used memory
+ */
+float MemoryUtilization(MemoryUtilData_t &memoryUtilData);
+/**
+ * @brief Extracts the system uptime from the /proc/uptime file
+ * This file contains two numbers (values in seconds): the uptime 
+ * of the system (including time spent in suspend) and the amount 
+ * of time spent in the idle process.
+ * 
+ * @return {long int} : The system uptime in seconds.  
+ */
+long int UpTime();
 std::vector<int> Pids();
+/**
+ * @brief Reads /proc/stat file and extracts the total number of processes  
+ * which is the value to the key "processes".
+ * 
+ * @return {int} : The total number of processes as an integer. 
+ */
 int TotalProcesses();
+/**
+ * @brief Reads /proc/stat file and extracts the number of running processes 
+ *  which is the value to the key "procs_running".
+ * 
+ * @return {int} : The number of running processes as an integer.
+ */
 int RunningProcesses();
+/**
+ * @brief Reads the operating system name from the /etc/os-release file
+ * The function formats the file replacing spaces with underscores and
+ * = and " to spaces. It then extracts the value of the key "PRETTY_NAME
+ * and reformat back the string to the original format.
+ * 
+ * @return {string} : The operating system name as a string. 
+ */
 std::string OperatingSystem();
+/**
+ * @brief Reads the version file in proc directory and 
+ * retrives the kernel version of the operating system.
+ * The version file contains only one line and the 
+ * kernel version is the third string in this line.
+ * @return {string}  : The kernel version as a string.
+ */
 std::string Kernel();
 
 // CPU
