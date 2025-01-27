@@ -49,7 +49,15 @@ static bool isNumber(const std::string& str);
  * @return {float} : fraction of total used memory
  */
 float MemoryUtilization(MemoryUtilData_t &memoryUtilData);
-long UpTime();
+/**
+ * @brief Extracts the system uptime from the /proc/uptime file
+ * This file contains two numbers (values in seconds): the uptime 
+ * of the system (including time spent in suspend) and the amount 
+ * of time spent in the idle process.
+ * 
+ * @return {long int} : The system uptime in seconds.  
+ */
+long int UpTime();
 std::vector<int> Pids();
 /**
  * @brief Reads /proc/stat file and extracts the total number of processes  

@@ -13,9 +13,17 @@ using std::vector;
 #define RUN_PROCESS_KEY ("procs_running")
 
 static bool LinuxParser::isNumber(const std::string& str) {
+    bool decimalPointSeen = false;
+
     for (char c : str) {
-        if (!std::isdigit(c)) return false;
+        if (c == '.') {
+            if (decimalPointSeen) return false; // More than one decimal point
+            decimalPointSeen = true;
+        } else if (!std::isdigit(c)) {
+            return false;
+        }
     }
+
     return !str.empty();
 }
 
@@ -153,8 +161,58 @@ float LinuxParser::MemoryUtilization(MemoryUtilData_t &memoryUtilData)
   return float((memoryUtilData.MEM_TOTAL - memoryUtilData.MEM_FREE) / memoryUtilData.MEM_TOTAL); 
 }
 
-// TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+/**
+ * @brief Extracts the system uptime from the /proc/uptime file
+ * This file contains two numbers (values in seconds): the uptime 
+ * of the system (including time spent in suspend) and the amount 
+ * of time spent in the idle process.
+ * 
+ * @return {long int} : The system uptime in seconds.  
+ */
+long int LinuxParser::UpTime() 
+{ 
+  string line;
+  string uptimeValue;
+  long int returnValue = 0;
+  /* Create input file stream from /proc/uptime*/
+  std::ifstream streamUpTime(kProcDirectory + kUptimeFilename);
+
+  /* Check if it is open */
+  if (streamUpTime.is_open())
+  {
+    /* Only one line in this file so we read it and check if it is read correctly */
+    if (std::getline(streamUpTime, line))
+    {
+      /* Create string stream from this line */
+      std::stringstream lineStream(line);
+
+      /* Get the Uptime value */
+      lineStream >> uptimeValue;
+
+      /* Check if it is a number */
+      if (isNumber(uptimeValue))
+      {
+        /* Convert to long */
+        returnValue = stol(uptimeValue);
+      }
+      else
+      {
+        std::cout << "LinuxParser::UpTime:: Error value is not a number \n";
+      }
+    }
+    else
+    {
+      std::cout << "LinuxParser::UpTime:: Error reading line from file\n";
+    }
+    
+  }
+  else
+  {
+    std::cout << "LinuxParser::UpTime:: Error opening input stream from file\n";
+  }
+  
+  return returnValue; 
+}
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
