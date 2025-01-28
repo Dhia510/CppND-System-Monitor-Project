@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include "linux_parser.h"
 #include "process.h"
 
 using std::string;
@@ -36,8 +36,18 @@ string Process::Command() { return string(); }
 // TODO: Return this process's memory utilization
 string Process::Ram() { return string(); }
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+/**
+ * @brief Returns the user associated with this process
+ * 
+ * @return {string} : User name as a string 
+ */
+string Process::User() 
+{ 
+    /* Find UID associated with this process*/
+    string uid = LinuxParser::Uid(pid_);
+    /* Return user corresponding to the uid found */
+    return LinuxParser::User(uid); 
+}
 
 // TODO: Return the age of this process (in seconds)
 long int Process::UpTime() { return 0; }

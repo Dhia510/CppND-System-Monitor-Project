@@ -13,8 +13,13 @@ class Process {
    * 
    * @return {int} : Process Ids as an int 
    */
-  int Pid();                              
-  std::string User();                      // TODO: See src/process.cpp
+  int Pid();  
+  /**
+   * @brief Returns the user associated with this process
+   * 
+   * @return {string} : User name as a string 
+   */                             
+  std::string User();                     
   std::string Command();                   // TODO: See src/process.cpp
   float CpuUtilization();                  // TODO: See src/process.cpp
   std::string Ram();                       // TODO: See src/process.cpp
