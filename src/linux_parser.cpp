@@ -11,7 +11,7 @@ using std::to_string;
 using std::vector;
 
 #define RUN_PROCESS_KEY ("procs_running")
-
+#define UID_KEY  ("Uid:")
 
 /**
  * @brief This function checks if a string is a number
@@ -251,7 +251,7 @@ int LinuxParser::TotalProcesses()
   if (statStream.is_open())
   {
     /* As long as the key is different from "processes"*/
-    while (key.compare("processes"))
+    while (key != "processes")
     {
       /* Read line and check if it is read correctly */
       if (std::getline(statStream, line))
@@ -302,7 +302,7 @@ int LinuxParser::RunningProcesses()
   if (statStream.is_open())
   {
     /* loop through the file until the key procs_running is found */
-    while (key.compare(RUN_PROCESS_KEY))
+    while (key != RUN_PROCESS_KEY)
     {
       /* Read the line */
       if (std::getline(statStream, line))
@@ -346,13 +346,88 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the user ID associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid[[maybe_unused]]) { return string(); }
+/**
+ * @brief Reads /proc/pid/status file and extracts the UID associated with the process
+ *  the uid is the values associated with the key "Uid:"
+ * @param pid : Process ID
+ * @return {string} : UID associated with the process 
+ */
+string LinuxParser::Uid(string pid) 
+{ 
+    string key = " ";
+    string uid = " ";
+    string line;
+    /* Find the UID associated with the process */
+    /* Create input file stream from /proc/pid/status */
+    std::ifstream statuStream(LinuxParser::kProcDirectory + pid + LinuxParser::kStatusFilename);
 
-// TODO: Read and return the user associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+    /* Check if the file stream is open */
+    if (statuStream.is_open())
+    {
+        /* Read lines until key Uid is found */
+        while (key != UID_KEY)
+        {
+          /* Check if line is read correctly*/
+          if(std::getline(statuStream, line))
+          {
+              statuStream >> key >> uid;
+          }
+          else
+          {
+            std::cout << "LinuxParser::Uid:: Error reading line from file\n";
+          }
+        }
+    }
+    else
+    {
+        std::cout << "LinuxParser::Uid:: Error opening input stream from file\n";
+    }
+    
+  return uid; 
+}
+
+/**
+ * @brief Reads /etc/passwd file and extracts the user name associated with the UID
+ *  the function loops through the file line by line formatting the line by replacing
+ * ':' with ' ' and then extracts the user name associated with the UID
+ * if the UID is not found the function returns "UNKNOWN"
+ * @param uid 
+ * @return string 
+ */
+string LinuxParser::User(string uid) 
+{ 
+  string userId = "";
+  string returnValue = "UNKNOWN";
+  std::ifstream passwdStream(kPasswordPath);
+  string value = " ";
+  string x;
+  string line;
+
+  if (passwdStream.is_open())
+  {
+    while (value != uid)
+    {
+      if (std::getline(passwdStream, line))
+      {
+        std::replace(line.begin(), line.end(), ':', ' ');
+        std::istringstream lineStream(line);
+        lineStream >> userId >> x >> value;
+      }
+      else
+      {
+        std::cout << "LinuxParser::User:: Error reading line from file\n";
+      }
+    }
+
+    returnValue = userId;
+  }
+  else
+  {
+    std::cout << "LinuxParser::User:: Error opening input stream from file\n";
+  }
+
+  return returnValue; 
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function

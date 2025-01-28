@@ -112,8 +112,22 @@ long IdleJiffies();
 // Processes
 std::string Command(int pid);
 std::string Ram(int pid);
-std::string Uid(int pid);
-std::string User(int pid);
+/**
+ * @brief Reads /proc/pid/status file and extracts the UID associated with the process
+ *  the uid is the values associated with the key "Uid:"
+ * @param pid : Process ID
+ * @return {string} : UID associated with the process 
+ */
+std::string Uid(std::string pid);
+/**
+ * @brief Reads /etc/passwd file and extracts the user name associated with the UID
+ *  the function loops through the file line by line formatting the line by replacing
+ * ':' with ' ' and then extracts the user name associated with the UID
+ * if the UID is not found the function returns "UNKNOWN"
+ * @param uid : User ID
+ * @return {string} : User name associated with the UID 
+ */
+std::string User(std::string uid);
 long int UpTime(int pid);
 };  // namespace LinuxParser
 
