@@ -10,8 +10,22 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
-int Process::Pid() { return 0; }
+/**
+ * @brief Construct a new Process object
+ * 
+ * @param id : process id 
+ */
+Process::Process(int id) : pid_(to_string(id)) {}
+
+/**
+ * @brief Returns the process's ID
+ * 
+ * @return {int} : Process Ids as an int 
+ */
+int Process::Pid() 
+{ 
+    return stoi(pid_); 
+}
 
 // TODO: Return this process's CPU utilization
 float Process::CpuUtilization() { return 0; }
