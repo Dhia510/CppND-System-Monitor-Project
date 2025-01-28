@@ -8,6 +8,7 @@
 #include "process.h"
 #include "processor.h"
 #include "system.h"
+#include <iostream>
 
 using std::set;
 using std::size_t;
@@ -20,6 +21,18 @@ Processor &System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 vector<Process> &System::Processes() { return processes_; }
 
+/**
+ * @brief Construct a new System:: System object
+ * The constructor retrieves the list of process ids
+ * and fills the processes_ attributes
+ */
+System::System()
+{
+  for(int id : LinuxParser::Pids())
+  {
+    processes_.push_back(Process(id));
+  }
+}
 /**
  * @brief Return kernel version provided by the 
  * LinuxParser API 
