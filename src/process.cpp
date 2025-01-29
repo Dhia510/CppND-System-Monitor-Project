@@ -105,8 +105,17 @@ string Process::User()
     return LinuxParser::User(uid); 
 }
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+/**
+ * @brief Returns the process's uptime
+ * Calls LinuxParser::UpTime which returns uptimes in clk
+ * ticks then converts it to seconds by dividing by clk frequency
+ * 
+ * @return {long int} : Process uptime in seconds 
+ */
+long int Process::UpTime() 
+{ 
+    return LinuxParser::UpTime(pid_) / clkTck_; 
+}
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function

@@ -47,8 +47,15 @@ class Process {
   * 
   * @return {string} : Memory usage as a string in Mb
   */
-  std::string Ram();                       
-  long int UpTime();                       // TODO: See src/process.cpp
+  std::string Ram();   
+/**
+ * @brief Returns the process's uptime
+ * Calls LinuxParser::UpTime which returns uptimes in clk
+ * ticks then converts it to seconds by dividing by clk frequency
+ * 
+ * @return {long int} : Process uptime in seconds 
+ */                    
+  long int UpTime();                     
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
   /**
    * @brief Construct a new Process object
