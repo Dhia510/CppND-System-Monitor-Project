@@ -42,7 +42,12 @@ class Process {
  * @return {float} : CPU utilization as a fraction 
  */
   float CpuUtilization();  
-  std::string Ram();                       // TODO: See src/process.cpp
+ /**
+  * @brief Gets the process memory usage
+  * 
+  * @return {string} : Memory usage as a string in Mb
+  */
+  std::string Ram();                       
   long int UpTime();                       // TODO: See src/process.cpp
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
   /**
