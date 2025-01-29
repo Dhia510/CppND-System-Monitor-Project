@@ -7,6 +7,18 @@
 
 namespace LinuxParser {
 
+// Defines
+#define KEY_UTIME  ("utime")
+#define KEY_STIME  ("stime")
+#define KEY_CUTIME ("cutime")
+#define KEY_CSTIME ("cstime")
+#define KEY_STARTTIME ("starttime")
+#define UTIME_IDX  (13)
+#define STIME_IDX  (14)
+#define CUTIME_IDX (15)
+#define CSTIME_IDX (16)
+#define STARTTIME_IDX (21)
+
 struct MemoryUtilData_t
 {
   float MEM_TOTAL = 0;
@@ -128,7 +140,21 @@ std::string Uid(std::string pid);
  * @return {string} : User name associated with the UID 
  */
 std::string User(std::string uid);
+/**
+ * @brief Reads /proc/pid/stat file and extract necesary data
+ * for process cpu utilization in a map :
+ * idx 14 utime - CPU time spent in user code, measured in clock ticks
+ * idx 15 stime - CPU time spent in kernel code, measured in clock ticks
+ * idx 16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
+ * idx 17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
+ * idx 22 starttime - Time when the process started, measured in clock ticks
+ * 
+ * @param pid : Process ID
+ * @return {std::map<std::string, long>} : Map containing the data
+ */
+std::map<std::string, long> processUtilData(std::string pid);
 long int UpTime(int pid);
+
 };  // namespace LinuxParser
 
 #endif

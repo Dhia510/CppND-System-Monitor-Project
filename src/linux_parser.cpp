@@ -434,6 +434,66 @@ string LinuxParser::User(string uid)
 long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
 
 /**
+ * @brief Reads /proc/pid/stat file and extract necesary data
+ * for process cpu utilization in a map :
+ * idx 14 utime - CPU time spent in user code, measured in clock ticks
+ * idx 15 stime - CPU time spent in kernel code, measured in clock ticks
+ * idx 16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
+ * idx 17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
+ * idx 22 starttime - Time when the process started, measured in clock ticks
+ * 
+ * @param pid : Process ID
+ * @return {std::map<std::string, long>} : Map containing the data
+ */
+std::map<std::string, long> LinuxParser::processUtilData(string pid)
+{
+    std::map<std::string, long> processUtilData;
+    string line;
+    string value;
+    vector<string> valuesFromFile;
+    /* Create file iput stream from file /proc/pid/stat */
+    std::ifstream statStream(kProcDirectory + pid + kStatFilename);
+
+    /* Check file stream is open */
+    if (statStream.is_open())
+    {
+      /* Read line and check if it is read successfully*/
+      if (std::getline(statStream, line))
+      {
+        /* Create string stram from line */
+        std::istringstream lineStream(line);
+        
+        /* Read values in the line */
+        while (lineStream >> value)
+        {
+          /* Store each value in a vector */
+          valuesFromFile.push_back(value);
+        }
+        
+      }
+      else
+      {
+        std::cout << "LinuxParser::processUtilData:: Error reading line from file\n";
+      }
+    }
+    else
+    {
+      std::cout << "LinuxParser::processUtilData:: Error opening input stream from file\n";
+    }
+
+    /* Check if the vector size is coherent */
+    if (valuesFromFile.size() > 22) {
+        processUtilData[KEY_UTIME] = std::stol(valuesFromFile[UTIME_IDX]);
+        processUtilData[KEY_STIME] = std::stol(valuesFromFile[STIME_IDX]);
+        processUtilData[KEY_CUTIME] = std::stol(valuesFromFile[CUTIME_IDX]);
+        processUtilData[KEY_CSTIME] = std::stol(valuesFromFile[CSTIME_IDX]);
+        processUtilData[KEY_STARTTIME] = std::stol(valuesFromFile[STARTTIME_IDX]);
+    }
+
+    return processUtilData;
+}
+
+/**
  * @brief This function checks if a string is a number
  * This includes also floating point numbers
  * 
