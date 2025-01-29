@@ -123,6 +123,15 @@ long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
+/**
+ * @brief Retrieves memory size of a process from /proc/pid/status file
+ * We take the size indicated by the key "VmRSS:" and convert it to Mb
+ * instead of VmSize which is the total virtual memory size of the process
+ * because it includes shared memory and memory that is swapped out
+ * 
+ * @param pid : Process ID
+ * @return {string} : Memory size of the process in Mb 
+ */
 std::string Ram(std::string pid);
 /**
  * @brief Reads /proc/pid/status file and extracts the UID associated with the process

@@ -12,7 +12,7 @@ using std::vector;
 
 #define RUN_PROCESS_KEY ("procs_running")
 #define UID_KEY  ("Uid:")
-#define KEY_VMSIZE ("VmSize:")
+#define KEY_VMRSS ("VmRSS:")
 
 /**
  * @brief This function checks if a string is a number
@@ -343,8 +343,15 @@ int LinuxParser::RunningProcesses()
 // REMOVE: [[maybe_unused]] once you define the function
 string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
-// TODO: Read and return the memory used by a process
-// REMOVE: [[maybe_unused]] once you define the function
+/**
+ * @brief Retrieves memory size of a process from /proc/pid/status file
+ * We take the size indicated by the key "VmRSS:" and convert it to Mb
+ * instead of VmSize which is the total virtual memory size of the process
+ * because it includes shared memory and memory that is swapped out
+ * 
+ * @param pid : Process ID
+ * @return {string} : Memory size of the process in Mb 
+ */
 string LinuxParser::Ram(string pid) {
 
   string line;
@@ -367,7 +374,7 @@ string LinuxParser::Ram(string pid) {
       lineStream >> key >> value;
 
       /* If the key is Vmsize:*/
-      if (key == KEY_VMSIZE)
+      if (key == KEY_VMRSS)
       {
         /* Set found flag to true */
         vmSizeFound = true;
@@ -382,12 +389,13 @@ string LinuxParser::Ram(string pid) {
     /*error opening file*/
   }
 
+  /* Check if vmsize is found */
   if (vmSizeFound)
   {
     /* Convert value to Mb */
     retVal = to_string(stol(value) / 1024);
   }
-  else
+  else /* Zombie process*/
   {
     retVal = "N/A";
   }
