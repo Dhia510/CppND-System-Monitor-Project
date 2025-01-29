@@ -123,7 +123,7 @@ long IdleJiffies();
 
 // Processes
 std::string Command(int pid);
-std::string Ram(int pid);
+std::string Ram(std::string pid);
 /**
  * @brief Reads /proc/pid/status file and extracts the UID associated with the process
  *  the uid is the values associated with the key "Uid:"

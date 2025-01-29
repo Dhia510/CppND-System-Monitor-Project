@@ -12,6 +12,7 @@ using std::vector;
 
 #define RUN_PROCESS_KEY ("procs_running")
 #define UID_KEY  ("Uid:")
+#define KEY_VMSIZE ("VmSize:")
 
 /**
  * @brief This function checks if a string is a number
@@ -344,7 +345,55 @@ string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::Ram(string pid) {
+
+  string line;
+  string key = " ";
+  string value = "0";
+  bool vmSizeFound = false;
+  string retVal = "N/A";
+  /* Create input file stream from status file */
+  std::ifstream streamStatus(kProcDirectory + pid + kStatusFilename);
+
+  /* check if it is open */
+  if (streamStatus.is_open())
+  {
+    /* Start reading file line by line */
+    while (std::getline(streamStatus, line))
+    {
+      /* Create line stream */
+      std::istringstream lineStream(line);
+      /* Read key and value in that line */
+      lineStream >> key >> value;
+
+      /* If the key is Vmsize:*/
+      if (key == KEY_VMSIZE)
+      {
+        /* Set found flag to true */
+        vmSizeFound = true;
+        /* break while loop */
+        break;
+      }
+    }
+    
+  }
+  else
+  {
+    /*error opening file*/
+  }
+
+  if (vmSizeFound)
+  {
+    /* Convert value to Mb */
+    retVal = to_string(stol(value) / 1024);
+  }
+  else
+  {
+    retVal = "N/A";
+  }
+  
+  return retVal;
+}
 
 /**
  * @brief Reads /proc/pid/status file and extracts the UID associated with the process
