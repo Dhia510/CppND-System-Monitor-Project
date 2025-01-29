@@ -486,9 +486,51 @@ string LinuxParser::User(string uid)
   return returnValue; 
 }
 
-// TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+/**
+ * @brief Reads the /proc/pid/stat file and extracts all the data
+ * then returns the starttime at index 22 which is the uptime in seconds
+ * of this process.
+ * 
+ * @param pid : Process ID.
+ * @return {long} : The uptime time of the process in seconds.
+ */
+long LinuxParser::UpTime(string pid) 
+{ 
+    string line;
+    string value;
+    vector<string> valuesFromFile;
+    /* Create file iput stream from file /proc/pid/stat */
+    std::ifstream statStream(kProcDirectory + pid + kStatFilename);
+
+    /* Check file stream is open */
+    if (statStream.is_open())
+    {
+      /* Read line and check if it is read successfully*/
+      if (std::getline(statStream, line))
+      {
+        /* Create string stram from line */
+        std::istringstream lineStream(line);
+        
+        /* Read values in the line */
+        while (lineStream >> value)
+        {
+          /* Store each value in a vector */
+          valuesFromFile.push_back(value);
+        }
+        
+      }
+      else
+      {
+        std::cout << "LinuxParser::processUtilData:: Error reading line from file\n";
+      }
+    }
+    else
+    {
+      std::cout << "LinuxParser::processUtilData:: Error opening input stream from file\n";
+    }
+
+  return valuesFromFile[21] != "" ? std::stol(valuesFromFile[21]) : 0; 
+}
 
 /**
  * @brief Reads /proc/pid/stat file and extract necesary data

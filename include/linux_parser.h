@@ -162,7 +162,15 @@ std::string User(std::string uid);
  * @return {std::map<std::string, long>} : Map containing the data
  */
 std::map<std::string, long> processUtilData(std::string pid);
-long int UpTime(int pid);
+/**
+ * @brief Reads the /proc/pid/stat file and extracts all the data
+ * then returns the starttime at index 22 which is the uptime in seconds
+ * of this process.
+ * 
+ * @param pid : Process ID.
+ * @return {long} : The uptime time of the process in seconds.
+ */
+long int UpTime(std::string pid);
 
 };  // namespace LinuxParser
 
