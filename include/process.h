@@ -34,6 +34,7 @@ class Process {
   // TODO: Declare any necessary private members
  private:
  std::string pid_;
+ static long clkTck_;
 };
 
 #endif

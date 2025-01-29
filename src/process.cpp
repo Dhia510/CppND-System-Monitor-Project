@@ -10,6 +10,9 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+// Define and initialize the static member variable clkTck_
+long Process::clkTck_ = sysconf(_SC_CLK_TCK);
+
 /**
  * @brief Construct a new Process object
  * 
