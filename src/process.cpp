@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unistd.h> // for sysconf
 #include "linux_parser.h"
 #include "process.h"
 
@@ -30,8 +31,53 @@ int Process::Pid()
     return stoi(pid_); 
 }
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+/**
+ * @brief Retireves the CPU utilization data for this process
+ * provided by LinuxParser::processUtilData and computes the 
+ * CPU utilization in fraction using the following formula
+ * ------------------------------------------------------
+ * |               CPU Utilization                      |
+ * |----------------------------------------------------|
+ * | Formula:                                           |
+ * |   Total time spent for the process :               |
+ * |   total_time = utime + stime + cutime + cstime     |
+ * |   Total elapsed time in seconds since the          |
+ * |   process started :                                |
+ * |   seconds = uptime - (starttime / clk frequency)   |  
+ * |   CPU usage :                                      |             
+ * |   CPU Utilization = (total_time / clk frequency)   |
+ * |                      / seconds                     |
+ * ------------------------------------------------------
+ * 
+ * @return {float} : CPU utilization as a fraction 
+ */
+float Process::CpuUtilization() 
+{   
+    /* Get CPU utilization data */
+    std::map<string, long> processUtilData = LinuxParser::processUtilData(pid_);
+    /* Calculate total time spent by the process */
+    long total_time = processUtilData[KEY_UTIME]   
+                    + processUtilData[KEY_STIME]   
+                    + processUtilData[KEY_CUTIME]  
+                    + processUtilData[KEY_CSTIME];
+
+    float cpuUtil = 0;
+    float seconds = 0;
+    
+    if (clkTck_ != 0)
+    {
+        /* Calculate total elapsed time since the process started */
+        seconds = LinuxParser::UpTime() - (processUtilData[KEY_STARTTIME] / clkTck_);
+
+        if (seconds != 0)
+        {
+            /* Calculate CPU utilization */
+            cpuUtil = (total_time / clkTck_) / seconds;
+        }       
+    }
+ 
+    return cpuUtil; 
+}
 
 // TODO: Return the command that generated this process
 string Process::Command() { return string(); }

@@ -21,7 +21,27 @@ class Process {
    */                             
   std::string User();                     
   std::string Command();                   // TODO: See src/process.cpp
-  float CpuUtilization();                  // TODO: See src/process.cpp
+/**
+ * @brief Retireves the CPU utilization data for this process
+ * provided by LinuxParser::processUtilData and computes the 
+ * CPU utilization in fraction using the following formula
+ * ------------------------------------------------------
+ * |               CPU Utilization                      |
+ * |----------------------------------------------------|
+ * | Formula:                                           |
+ * |   Total time spent for the process :               |
+ * |   total_time = utime + stime + cutime + cstime     |
+ * |   Total elapsed time in seconds since the          |
+ * |   process started :                                |
+ * |   seconds = uptime - (starttime / clk frequency)   |  
+ * |   CPU usage :                                      |             
+ * |   CPU Utilization = (total_time / clk frequency)   |
+ * |                      / seconds                     |
+ * ------------------------------------------------------
+ * 
+ * @return {float} : CPU utilization as a fraction 
+ */
+  float CpuUtilization();  
   std::string Ram();                       // TODO: See src/process.cpp
   long int UpTime();                       // TODO: See src/process.cpp
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
