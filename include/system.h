@@ -12,6 +12,13 @@ class System {
   Processor& Cpu();                   // TODO: See src/system.cpp
   std::vector<Process>& Processes();  // TODO: See src/system.cpp
 /**
+ * @brief Construct a new System:: System object
+ * The constructor retrieves the list of process ids
+ * and fills the processes_ attributes
+ */
+  System();
+  
+/**
  * @brief Returns the system's memory utilization.
  * Calls LinuxParser::MemoryUtilization()
  * @return {float}  : memory utilization as a float

@@ -7,6 +7,18 @@
 
 namespace LinuxParser {
 
+// Defines
+#define KEY_UTIME  ("utime")
+#define KEY_STIME  ("stime")
+#define KEY_CUTIME ("cutime")
+#define KEY_CSTIME ("cstime")
+#define KEY_STARTTIME ("starttime")
+#define UTIME_IDX  (13)
+#define STIME_IDX  (14)
+#define CUTIME_IDX (15)
+#define CSTIME_IDX (16)
+#define STARTTIME_IDX (21)
+
 struct MemoryUtilData_t
 {
   float MEM_TOTAL = 0;
@@ -110,11 +122,56 @@ long ActiveJiffies(int pid);
 long IdleJiffies();
 
 // Processes
-std::string Command(int pid);
-std::string Ram(int pid);
-std::string Uid(int pid);
-std::string User(int pid);
-long int UpTime(int pid);
+std::string Command(std::string pid);
+/**
+ * @brief Retrieves memory size of a process from /proc/pid/status file
+ * We take the size indicated by the key "VmRSS:" and convert it to Mb
+ * instead of VmSize which is the total virtual memory size of the process
+ * because it includes shared memory and memory that is swapped out
+ * 
+ * @param pid : Process ID
+ * @return {string} : Memory size of the process in Mb 
+ */
+std::string Ram(std::string pid);
+/**
+ * @brief Reads /proc/pid/status file and extracts the UID associated with the process
+ *  the uid is the values associated with the key "Uid:"
+ * @param pid : Process ID
+ * @return {string} : UID associated with the process 
+ */
+std::string Uid(std::string pid);
+/**
+ * @brief Reads /etc/passwd file and extracts the user name associated with the UID
+ *  the function loops through the file line by line formatting the line by replacing
+ * ':' with ' ' and then extracts the user name associated with the UID
+ * if the UID is not found the function returns "UNKNOWN"
+ * @param uid : User ID
+ * @return {string} : User name associated with the UID 
+ */
+std::string User(std::string uid);
+/**
+ * @brief Reads /proc/pid/stat file and extract necesary data
+ * for process cpu utilization in a map :
+ * idx 14 utime - CPU time spent in user code, measured in clock ticks
+ * idx 15 stime - CPU time spent in kernel code, measured in clock ticks
+ * idx 16 cutime - Waited-for children's CPU time spent in user code (in clock ticks)
+ * idx 17 cstime - Waited-for children's CPU time spent in kernel code (in clock ticks)
+ * idx 22 starttime - Time when the process started, measured in clock ticks
+ * 
+ * @param pid : Process ID
+ * @return {std::map<std::string, long>} : Map containing the data
+ */
+std::map<std::string, long> processUtilData(std::string pid);
+/**
+ * @brief Reads the /proc/pid/stat file and extracts all the data
+ * then returns the starttime at index 22 which is the uptime in seconds
+ * of this process.
+ * 
+ * @param pid : Process ID.
+ * @return {long} : The uptime time of the process in seconds.
+ */
+long int UpTime(std::string pid);
+
 };  // namespace LinuxParser
 
 #endif
