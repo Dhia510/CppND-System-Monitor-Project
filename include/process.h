@@ -46,7 +46,7 @@ class Process {
  * 
  * @return {float} : CPU utilization as a fraction 
  */
-  float CpuUtilization() const;  
+  float CpuUtilization();  
  /**
   * @brief Gets the process memory usage
   * 
@@ -60,15 +60,7 @@ class Process {
  * 
  * @return {long int} : Process uptime in seconds 
  */                    
-  long int UpTime(); 
-/**
- * @brief Overload the less than operator to compare two processes
- * based on their CPU utilization
- * 
- * @param a : Process to compare with
- * @return {true} : If this process has a lower CPU utilization 
- * @return false  : Otherwise
- */                    
+  long int UpTime();                     
   bool operator<(Process const& a) const;  // TODO: See src/process.cpp
   /**
    * @brief Construct a new Process object
@@ -76,17 +68,10 @@ class Process {
    * @param id : process id 
    */
   Process(int id);
-  /**
-   * @brief Updates cached CPU utilization
-   * 
-   */
-  void UpdateCpuUtilization();
-  
-  private:
-  std::string pid_;
-  static long clkTck_;
-  float cached_cpu_{0.0};
-
+  // TODO: Declare any necessary private members
+ private:
+ std::string pid_;
+ static long clkTck_;
 };
 
 #endif
