@@ -78,9 +78,15 @@ float Process::CpuUtilization()
  
     return cpuUtil; 
 }
-
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+/**
+ * @brief Returns the command that generated this process
+ * 
+ * @return {std::string} : Command as a string 
+ */
+string Process::Command() 
+{ 
+    return LinuxParser::Command(pid_); 
+}
 
 /**
  * @brief Gets the process memory usage

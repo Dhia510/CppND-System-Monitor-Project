@@ -19,8 +19,13 @@ class Process {
    * 
    * @return {string} : User name as a string 
    */                             
-  std::string User();                     
-  std::string Command();                   // TODO: See src/process.cpp
+  std::string User(); 
+  /**
+   * @brief Returns the command that generated this process
+   * 
+   * @return {std::string} : Command as a string 
+   */
+  std::string Command(); 
 /**
  * @brief Retireves the CPU utilization data for this process
  * provided by LinuxParser::processUtilData and computes the 
