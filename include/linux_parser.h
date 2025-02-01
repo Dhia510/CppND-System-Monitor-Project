@@ -122,7 +122,7 @@ long ActiveJiffies(int pid);
 long IdleJiffies();
 
 // Processes
-std::string Command(int pid);
+std::string Command(std::string pid);
 /**
  * @brief Retrieves memory size of a process from /proc/pid/status file
  * We take the size indicated by the key "VmRSS:" and convert it to Mb

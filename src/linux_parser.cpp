@@ -339,9 +339,31 @@ int LinuxParser::RunningProcesses()
   return nbOfRunningProcesses; 
 }
 
-// TODO: Read and return the command associated with a process
-// REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid[[maybe_unused]]) { return string(); }
+/**
+ * @brief Reads /proc/pid/cmdline file and extracts the command that generated the
+ * process with the given pid.
+ * the file contains only one line which is the command that generated the process.
+ * 
+ * @param pid : Process ID
+ * @return {string} : Command that generated the process 
+ */
+string LinuxParser::Command(string pid) 
+{ 
+  string line;
+  string command = "No command found";
+  std::ifstream cmdlineStream(kProcDirectory + pid + kCmdlineFilename);
+  
+  if (cmdlineStream.is_open())
+  {
+    if (std::getline(cmdlineStream, line))
+    {
+      command = line;
+    }
+  }
+  
+
+  return command; 
+}
 
 /**
  * @brief Retrieves memory size of a process from /proc/pid/status file
