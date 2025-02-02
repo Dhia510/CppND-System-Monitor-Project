@@ -19,80 +19,82 @@ using std::vector;
 Processor &System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process> &System::Processes() { return processes_; }
+vector<Process> &System::Processes() {
+  // Clear and rebuild process list
+  processes_.clear();
+
+  // Get current PIDs
+  vector<int> pids = LinuxParser::Pids();
+
+  // Create processes
+  for (int pid : pids) {
+    try {
+      processes_.emplace_back(pid);
+    } catch (...) {
+      continue; // Skip failed process creation
+    }
+  }
+
+  // Single sort operation
+  std::sort(processes_.begin(), processes_.end());
+
+  return processes_;
+}
 
 /**
  * @brief Construct a new System:: System object
  * The constructor retrieves the list of process ids
  * and fills the processes_ attributes
  */
-System::System()
-{
-  for(int id : LinuxParser::Pids())
-  {
+System::System() {
+  for (int id : LinuxParser::Pids()) {
     processes_.push_back(Process(id));
   }
 }
 /**
- * @brief Return kernel version provided by the 
- * LinuxParser API 
+ * @brief Return kernel version provided by the
+ * LinuxParser API
  * calls LinuxParser::Kernel()
  * @return {string}  : The kernel version as a string.
  */
-std::string System::Kernel() 
-{ 
-    return LinuxParser::Kernel(); 
-}
+std::string System::Kernel() { return LinuxParser::Kernel(); }
 
 /**
  * @brief Returns the system's memory utilization.
  * Calls LinuxParser::MemoryUtilization()
  * @return {float}  : memory utilization as a float
  */
-float System::MemoryUtilization() 
-{ 
-    return LinuxParser::MemoryUtilization( System::memoryUtilData_); 
+float System::MemoryUtilization() {
+  return LinuxParser::MemoryUtilization(System::memoryUtilData_);
 }
 
 /**
- * @brief Return the operating system name provided by the 
+ * @brief Return the operating system name provided by the
  * LinuxParser API
- * 
+ *
  * @return {string} : The operating system name as a string.
  */
-std::string System::OperatingSystem() 
-{ 
-    return LinuxParser::OperatingSystem(); 
-}
+std::string System::OperatingSystem() { return LinuxParser::OperatingSystem(); }
 
 /**
  * @brief This function returns the number of running processes
  * by calling LinuxParser::RunningProcesses()
- * 
- * @return {int} number of running processes 
+ *
+ * @return {int} number of running processes
  */
-int System::RunningProcesses() 
-{ 
-    return LinuxParser::RunningProcesses(); 
-}
+int System::RunningProcesses() { return LinuxParser::RunningProcesses(); }
 
 /**
  * @brief Return the total number of processes by calling
  * LinuxParser::TotalProcesses()
- * 
- * @return {int} : The total number of processes as an integer. 
+ *
+ * @return {int} : The total number of processes as an integer.
  */
-int System::TotalProcesses() 
-{ 
-    return LinuxParser::TotalProcesses(); 
-}
+int System::TotalProcesses() { return LinuxParser::TotalProcesses(); }
 
 /**
  * @brief Return the system uptime by calling LinuxParser::UpTime()
- * 
- * @return {long int} : The system uptime in seconds. 
+ *
+ * @return {long int} : The system uptime in seconds.
  */
-long int System::UpTime() 
-{ 
-    return LinuxParser::UpTime(); 
-}
+long int System::UpTime() { return LinuxParser::UpTime(); }
