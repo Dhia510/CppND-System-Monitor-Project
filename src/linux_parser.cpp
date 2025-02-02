@@ -143,18 +143,18 @@ float LinuxParser::MemoryUtilization(MemoryUtilData_t &memoryUtilData)
         }
         else
         {
-          std::cout << "LinuxParser::MemoryUtilization:: Error reading value in line " << l_idx << std::endl;
+           //error
         }
       }
       else
       {
-        std::cout << "LinuxParser::MemoryUtilization:: Error reading line " << l_idx << " from file\n";
+        //error
       }
     }
   }
   else
   {
-    std::cout << "LinuxParser::MemoryUtilization:: Error opening input stream from file\n";
+    //error
   }
 
   /* Parse extracted values in a structure */
@@ -203,18 +203,18 @@ long int LinuxParser::UpTime()
       }
       else
       {
-        std::cout << "LinuxParser::UpTime:: Error value is not a number \n";
+        //error
       }
     }
     else
     {
-      std::cout << "LinuxParser::UpTime:: Error reading line from file\n";
+      //error
     }
     
   }
   else
   {
-    std::cout << "LinuxParser::UpTime:: Error opening input stream from file\n";
+    //error
   }
   
   return returnValue; 
@@ -284,7 +284,8 @@ vector<string> LinuxParser::CpuUtilization()
   vector<string> values;
   std::ifstream stream(kProcDirectory + kStatFilename);
   
-  if (stream.is_open()) {
+  if (stream.is_open()) 
+  {
     if (std::getline(stream, line)) {
       std::istringstream linestream(line);
       std::istream_iterator<string> begin(linestream), end;
@@ -294,10 +295,12 @@ vector<string> LinuxParser::CpuUtilization()
     } 
     else 
     {
-      std::cout << "LinuxParser::CpuUtilization:: Error reading line from file\n";
+      //error
     }
-  } else {
-    std::cout << "LinuxParser::CpuUtilization:: Error opening input stream from file\n";
+  } 
+  else 
+  {
+    //error
   }
 
   return values;
@@ -335,14 +338,14 @@ int LinuxParser::TotalProcesses()
       }
       else
       {
-        std::cout << "LinuxParser::TotalProcesses:: Error reading line from file\n";
+        //error
       }
     }
     
   }
   else
   {
-    std::cout << "LinuxParser::TotalProcesses:: Error opening input stream from file\n";
+    //error
   }
   
   /* If value found is a number */
@@ -387,7 +390,7 @@ int LinuxParser::RunningProcesses()
       }
       else
       {
-        std::cout << "LinuxParser::RunningProcesses:: error reading line from file\n";
+        //error
       }
     }
     
@@ -398,12 +401,12 @@ int LinuxParser::RunningProcesses()
     }
     else
     {
-      std::cout << "LinuxParser::RunningProcesses:: Error extracting the value for nb of processes\n";
+      //error
     }
   }
   else
   {
-    std::cout << "LinuxParser::RunningProcesses:: Error opening input stream from file\n";
+    //error
   }
   
   /* Convert and return the value */
@@ -524,13 +527,13 @@ string LinuxParser::Uid(string pid)
           }
           else
           {
-            std::cout << "LinuxParser::Uid:: Error reading line from file\n";
+            //error
           }
         }
     }
     else
     {
-        std::cout << "LinuxParser::Uid:: Error opening input stream from file\n";
+        //error
     }
     
   return uid; 
@@ -565,7 +568,7 @@ string LinuxParser::User(string uid)
       }
       else
       {
-        std::cout << "LinuxParser::User:: Error reading line from file\n";
+        //error
       }
     }
 
@@ -573,7 +576,7 @@ string LinuxParser::User(string uid)
   }
   else
   {
-    std::cout << "LinuxParser::User:: Error opening input stream from file\n";
+    //error
   }
 
   return returnValue; 
@@ -614,12 +617,12 @@ long LinuxParser::UpTime(string pid)
       }
       else
       {
-        std::cout << "LinuxParser::processUtilData:: Error reading line from file\n";
+        //error
       }
     }
     else
     {
-      std::cout << "LinuxParser::processUtilData:: Error opening input stream from file\n";
+      //error
     }
 
   return valuesFromFile[21] != "" ? std::stol(valuesFromFile[21]) : 0; 
@@ -665,12 +668,12 @@ std::map<std::string, long> LinuxParser::processUtilData(string pid)
       }
       else
       {
-        std::cout << "LinuxParser::processUtilData:: Error reading line from file\n";
+        //error
       }
     }
     else
     {
-      std::cout << "LinuxParser::processUtilData:: Error opening input stream from file\n";
+      //error
     }
 
     /* Check if the vector size is coherent */
