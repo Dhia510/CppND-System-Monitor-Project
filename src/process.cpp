@@ -19,7 +19,19 @@ long Process::clkTck_ = sysconf(_SC_CLK_TCK);
  * 
  * @param id : process id 
  */
-Process::Process(int id) : pid_(to_string(id)) {}
+Process::Process(int id) : pid_(to_string(id))
+{
+    UpdateCpuUtilization();
+}
+
+/**
+ * @brief Updates cached CPU utilization
+ * 
+ */
+void Process::UpdateCpuUtilization() 
+{
+    cached_cpu_ = this->CpuUtilization();
+}
 
 /**
  * @brief Returns the process's ID
@@ -51,7 +63,7 @@ int Process::Pid()
  * 
  * @return {float} : CPU utilization as a fraction 
  */
-float Process::CpuUtilization() 
+float Process::CpuUtilization() const
 {   
     /* Get CPU utilization data */
     std::map<string, long> processUtilData = LinuxParser::processUtilData(pid_);
@@ -123,6 +135,15 @@ long int Process::UpTime()
     return LinuxParser::UpTime(pid_) / clkTck_; 
 }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+/**
+ * @brief Overload the less than operator to compare two processes
+ * based on their CPU utilization
+ * 
+ * @param a : Process to compare with
+ * @return {true} : If this process has a lower CPU utilization 
+ * @return false  : Otherwise
+ */
+bool Process::operator<(Process const& a) const 
+{  
+    return this->cached_cpu_ > a.cached_cpu_; 
+}
