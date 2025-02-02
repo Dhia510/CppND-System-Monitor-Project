@@ -9,13 +9,23 @@
 #include "processor.h"
 class System {
 public:
-  Processor &Cpu();                  // TODO: See src/system.cpp
-  std::vector<Process> &Processes(); // TODO: See src/system.cpp
-                                     /**
-                                      * @brief Construct a new System:: System object
-                                      * The constructor retrieves the list of process ids
-                                      * and fills the processes_ attributes
-                                      */
+  /**
+   * @brief returns the system's CPU
+   * 
+   * @return Processor& 
+   */
+  Processor &Cpu();                 
+  /**
+   * @brief reutrns the system's processes ordered by CPU utilization
+   * 
+   * @return vector<Process>& 
+   */
+  std::vector<Process> &Processes(); 
+  /**
+   * @brief Construct a new System:: System object
+   * The constructor retrieves the list of process ids
+   * and fills the processes_ attributes
+   */
   System();
 
   /**

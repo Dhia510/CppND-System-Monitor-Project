@@ -15,10 +15,18 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+/**
+ * @brief returns the system's CPU
+ * 
+ * @return Processor& 
+ */
 Processor &System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
+/**
+ * @brief reutrns the system's processes ordered by CPU utilization
+ * 
+ * @return vector<Process>& 
+ */
 vector<Process> &System::Processes() {
   // Clear and rebuild process list
   processes_.clear();
