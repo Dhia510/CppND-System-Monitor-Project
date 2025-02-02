@@ -115,10 +115,30 @@ enum CPUStates {
   kGuest_,
   kGuestNice_
 };
+
+/**
+ * @brief Reads /proc/stat file and extracts the CPU utilization
+ * 
+ * @return {std::vector<std::string>} : Vector containing the CPU utilization data
+ */
 std::vector<std::string> CpuUtilization();
+/**
+ * @brief Returns the CPU total utilization 
+ * 
+ * @return {long} : The total CPU utilization 
+ */
 long Jiffies();
+/**
+ * @brief Return the number of active jiffies for the system
+ * 
+ * @return {long} : The number of active jiffies for the system 
+ */
 long ActiveJiffies();
-long ActiveJiffies(int pid);
+/**
+ * @brief Return the number of idle jiffies for the system
+ * 
+ * @return {long} : The number of idle jiffies for the system 
+ */
 long IdleJiffies();
 
 // Processes

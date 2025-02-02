@@ -3,7 +3,9 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iterator>
 #include "linux_parser.h"
+
 
 using std::stof;
 using std::string;
@@ -218,21 +220,90 @@ long int LinuxParser::UpTime()
   return returnValue; 
 }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+/**
+ * @brief Returns the CPU total utilization 
+ * 
+ * @return {long} : The total CPU utilization 
+ */
+long LinuxParser::Jiffies() {
+  return LinuxParser::ActiveJiffies() + LinuxParser::IdleJiffies();
+}
 
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+/**
+ * @brief Return the number of active jiffies for the system
+ * 
+ * @return {long} : The number of active jiffies for the system 
+ */
+long LinuxParser::ActiveJiffies() {
+  std::vector<std::string> cpuUtilization = LinuxParser::CpuUtilization();
+  long int activeJiffies = 0;
+  
+  if (cpuUtilization.size() > kGuestNice_)
+  {
+    activeJiffies = std::stol(cpuUtilization[kUser_]) 
+                    + std::stol(cpuUtilization[kNice_]) 
+                    + std::stol(cpuUtilization[kSystem_]) 
+                    + std::stol(cpuUtilization[kSoftIRQ_]) 
+                    + std::stol(cpuUtilization[kSteal_]) 
+                    + std::stol(cpuUtilization[kGuest_]) 
+                    + std::stol(cpuUtilization[kGuestNice_]);
+  }
+  
 
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+  return activeJiffies;
+}
 
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+/**
+ * @brief Return the number of idle jiffies for the system
+ * 
+ * @return {long} : The number of idle jiffies for the system 
+ */
+long LinuxParser::IdleJiffies() {
+  std::vector<std::string> cpuUtilization = LinuxParser::CpuUtilization();
+  long int idleJiffies = 0;
 
-// TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+  if (cpuUtilization.size() > kIOwait_)
+  {
+    idleJiffies = std::stol(cpuUtilization[kIdle_]) + std::stol(cpuUtilization[kIOwait_]);
+  }
+  {
+    /* code */
+  }
+
+  return idleJiffies;
+}
+
+/**
+ * @brief Reads /proc/stat file and extracts the CPU utilization
+ * 
+ * @return {std::vector<std::string>} : Vector containing the CPU utilization data
+ */
+vector<string> LinuxParser::CpuUtilization() 
+{
+  string line;
+  vector<string> values;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  
+  if (stream.is_open()) {
+    if (std::getline(stream, line)) {
+      std::istringstream linestream(line);
+      std::istream_iterator<string> begin(linestream), end;
+      // Skip "cpu" by advancing iterator
+      begin = std::next(begin);
+      values = vector<string>(begin, end);
+    } 
+    else 
+    {
+      std::cout << "LinuxParser::CpuUtilization:: Error reading line from file\n";
+    }
+  } else {
+    std::cout << "LinuxParser::CpuUtilization:: Error opening input stream from file\n";
+  }
+
+  return values;
+}
+
+  
 
 /**
  * @brief Reads /proc/stat file and extracts the total number of processes  

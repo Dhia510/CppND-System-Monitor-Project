@@ -3,9 +3,13 @@
 
 class Processor {
  public:
-  float Utilization();  // TODO: See src/processor.cpp
+ /**
+ * @brief Returns the CPU utilization
+ * 
+ * @return {float} : CPU utilization in fraction 
+ */
+  float Utilization();
 
-  // TODO: Declare any necessary private members
  private:
 };
 
